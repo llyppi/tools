@@ -126,49 +126,6 @@ public class UteisSQLServer implements ISql{
                         , "MON$STATE",connection),0);
         }
         
-    public static boolean dbConnection(Connection connection,boolean on) {     
-        String pathGFIX = UteisProjeto.getConfig("pathGFIX");
-
-        if(pathGFIX==null || pathGFIX.isEmpty()){
-            System.out.println("VARIAVEL config-pathGFIX NÃO EXISTE");
-            return false; 
-        }
-        
-        if(!new File(pathGFIX).exists()){
-            System.out.println("DESTINO config-pathGFIX NÃO EXISTE:" + pathGFIX);
-            return false;
-        }
-        
-        //gfix -shut -force 0 nome_base -user nome_usuario -pass senha_usuario
-        String shutComando = "\""+pathGFIX+File.separator+"gfix.exe\" -shut -force 0 "+connection.getDataBase()
-                            +" -user "+connection.getUser()
-                            +" -pass "+connection.getPassword();
-        String onlineComando = "\""+pathGFIX+File.separator+"gfix.exe\" -online "+connection.getDataBase()
-                            +" -user "+connection.getUser()
-                            +" -pass "+connection.getPassword();
-        
-//        System.out.println(shutComando);
-        
-        Process p = null;
-        try {
-            p = Runtime.getRuntime().exec(onlineComando);//SE JA ESTIVER OFF
-            p.destroy();
-            
-            if(on){
-                return true;
-            }
-            p = Runtime.getRuntime().exec(shutComando);
-            p.destroy();
-            
-            return true;
-            
-        } catch (Exception ex) {
-            System.out.println(ex);
-            }
-        
-        return false;
-    }
-   
      /**
      * RETORNA LISTA QUE A TABELA DEPENDENTE
      */

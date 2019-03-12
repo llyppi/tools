@@ -1,3 +1,7 @@
+env:
+
+CODECOV_TOKEN="d2937505-461b-409d-8ebc-d6ec1d60276f"
+
 language: java
 jdk:
 - oraclejdk8
@@ -8,6 +12,4 @@ after_success:
 - bash <(curl -s https://codecov.io/bash)
 
 
-env:
 
-CODECOV_TOKEN="d2937505-461b-409d-8ebc-d6ec1d60276f"
