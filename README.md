@@ -5,7 +5,7 @@
 [![Build Status](https://travis-ci.org/llyppi/polls.svg?branch=master)](https://travis-ci.org/llyppi/tools)
 
 ## Synopsis  
-    Generater class .java from another model file
+    Generator class .java from another model file
     Define any packets(MVC) to create .java(ENTITY,DAO,BO...)
 
 ## Installation
