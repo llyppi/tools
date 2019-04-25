@@ -19,6 +19,7 @@
             <groupId>uteisJava</groupId>
             <artifactId>uteisJava</artifactId>
             <version>1.0</version>            
+            <scope>system</scope>
             <systemPath>${project.basedir}/WebContent/WEB-INF/lib/uteisJava.jar</systemPath>
         </dependency>
         <dependency>
