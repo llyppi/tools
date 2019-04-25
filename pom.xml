@@ -15,7 +15,12 @@
     </properties>
     
     <dependencies>
-        
+        <dependency>
+            <groupId>uteisJava</groupId>
+            <artifactId>uteisJava</artifactId>
+            <version>1.0</version>            
+            <systemPath>${project.basedir}/WebContent/WEB-INF/lib/uteisJava.jar</systemPath>
+        </dependency>
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
