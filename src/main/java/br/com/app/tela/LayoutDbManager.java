@@ -519,7 +519,7 @@ public class LayoutDbManager extends VerticalLayout{
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         };
-        drop.setFilesLimitUpload(1);
+        drop.setFilesLimit(1);
         
         return drop;
     }
