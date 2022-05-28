@@ -510,7 +510,7 @@ public class LayoutCreate extends VerticalLayout{
              
             }
         };
-        drop.setFilesLimit(1);
+        drop.setFilesLimitUpload(1);
 
         return drop;
     }
