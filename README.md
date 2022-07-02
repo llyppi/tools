@@ -5,8 +5,10 @@
 [![Build Status](https://travis-ci.org/llyppi/polls.svg?branch=master)](https://travis-ci.org/llyppi/tools)
 
 ## Synopsis  
-    Generater class .java from another model file
-    Define any packets(MVC) to create .java(ENTITY,DAO,BO...)
+    /create - Generater MVC model from template class
+    /uplink - Explorer remote sj://bucket from /WEB-INF/accessGrant.txt
+    /maps - Point photos lat/long on google maps
+    
 
 ## Installation
     Build project,Netbeas,Eclipse
