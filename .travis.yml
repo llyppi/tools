@@ -1,5 +1,5 @@
 env:
-CODECOV_TOKEN="d2937505-461b-409d-8ebc-d6ec1d60276f"
+CODECOV_TOKEN="5c242565-bcfb-4ceb-af1c-2fdf28f985ac"
 
 language: java
 jdk:
