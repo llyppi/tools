@@ -43,13 +43,13 @@ public class UteisSQL {
                 return String.valueOf(rs.getObject(alias));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e);
         } finally {
             try {
                 pstmt.close();
                 
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println(e);
             }
         }
         return null;
@@ -85,7 +85,7 @@ public class UteisSQL {
 
             } catch (Exception e) {
                 conn.setLog(conn.getLog()+"\n"+e.getMessage());
-                e.printStackTrace();
+                System.out.println(e);
             }
         }
         try {
@@ -105,7 +105,7 @@ public class UteisSQL {
                     "jdbc:odbc:driver={Microsoft Access Driver (*.mdb)};"
                     + "DBQ="+banco);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            System.out.println(ex);
         }
         return null;
     }

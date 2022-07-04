@@ -75,7 +75,7 @@ public class AppJavaMemory {
 //            printIP = new PrintStream(fileIP);            
 
         } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
+            System.out.println(ex);
         }
 
     }

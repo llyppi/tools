@@ -433,7 +433,7 @@ public class UteisProjeto implements Serializable{
             }
 
         } catch (MalformedURLException ex) {
-//            ex.printStackTrace();
+//            System.out.println(ex);
         }
 
         return 0;
@@ -482,6 +482,9 @@ public class UteisProjeto implements Serializable{
     }    
     
     public static Map<String,String> getEndereco(String cep){
+        if (!UteisMetodos.validateCEP(cep)) {
+            return null;
+        }
         String urlCorreios = getConfig("urlCorreios");
         urlCorreios = urlCorreios.replace("cep?", cep);
         

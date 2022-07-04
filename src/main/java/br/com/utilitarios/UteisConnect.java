@@ -175,7 +175,7 @@ public class UteisConnect {
                     "jdbc:odbc:driver={Microsoft Access Driver (*.mdb)};"
                     + "DBQ=" + banco);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            System.out.println(ex);
         }
         return null;
     }

@@ -2,6 +2,8 @@
 import br.com.app.tela.Application;
 import br.com.app.tela.LayoutCreate;
 import br.com.app.tela.LayoutDbManager;
+import br.com.app.tela.LayoutPhotoMap;
+import br.com.app.tela.LayoutUplink;
 import br.com.component.ConfigEdit;
 import br.com.component.ExplorerFile;
 import br.com.component.WindowPassword;
@@ -72,12 +74,20 @@ public class InitContext {
                 initConfig();
                 continue;
             }
+            if (arg.equalsIgnoreCase("maps")) {
+                initMaps();
+                continue;
+            }
             if (arg.equalsIgnoreCase("db")) {
                 initDBManager();
                 continue;
             }
             if (arg.equalsIgnoreCase("create")) {
                 initCreate();
+                continue;
+            }
+            if (arg.equalsIgnoreCase("uplink")) {
+                initUplink();
                 continue;
             }
             if (arg.equalsIgnoreCase("update")) {
@@ -88,13 +98,10 @@ public class InitContext {
                 initExplorer();
                 continue;
             }
-        
             if (arg.equalsIgnoreCase("logAll")) {
                 initDownLogAll();
                 continue;
             }
-            
-       
             if (arg.equalsIgnoreCase("logEx")) {
                 initDownLogException();
                 continue;
@@ -106,10 +113,12 @@ public class InitContext {
          
         }
         return true;
-    }    
+    }           
     
-    
-    
+    private void initMaps() {
+        
+        aplicacao.addComponent(new LayoutPhotoMap());
+    }
     private void initDBManager() {
         
         aplicacao.addComponent(new LayoutDbManager());
@@ -122,7 +131,15 @@ public class InitContext {
         
         aplicacao.addComponent(new LayoutCreate());
     }
-   
+    private void initUplink() {
+        
+        initPassword(new Runnable() {
+            @Override
+            public void run() {
+                aplicacao.addComponent(new LayoutUplink());
+            }
+        });
+    }
 
     private void initPassword(Runnable runnable) {
         UI.getCurrent().addWindow(new WindowPassword(pwApp, true, true) {
