@@ -8,7 +8,3 @@
     /create - Generater MVC model from template class
     /uplink - Explorer remote sj://bucket from /WEB-INF/accessGrant.txt
     /maps - Point /photos lat/long on google maps
-    
-
-## Installation
-    Build project,Netbeas,Eclipse
