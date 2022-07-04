@@ -34,7 +34,7 @@ import org.apache.commons.imaging.formats.tiff.write.TiffOutputSet;
  * @author Felipe L. Garcia
  */
 
-@JavaScript({"https://maps.googleapis.com/maps/api/js?key=AIzaSyCt2SPXywJ15axnG3jQHr-hoBra699voMo&callback=initMap"
+@JavaScript({"https://maps.googleapis.com/maps/api/js?key=&callback=initMap"
 ,"vaadin://js/map.js"})
 
 
