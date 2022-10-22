@@ -5,6 +5,3 @@
     /create - Generator MVC class .java from model file template              
     /uplink - Explorer storj cloud
     /maps   - Show coordinate from file on google maps
-
-## Installation
-    Build project
