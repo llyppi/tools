@@ -2,7 +2,7 @@ package br.com.app.tela;
 
 
 import br.com.component.AdvancedFileDownloader;
-import br.com.component.ButtonDowload;
+import br.com.component.ButtonDownload;
 import br.com.component.ButtonPopUp;
 import br.com.component.HorizontalLayout;
 import br.com.component.Pagination;
@@ -964,7 +964,7 @@ public class LayoutDbManager extends VerticalLayout{
     }
     
     private Component buildDownDependsJava() {
-        final ButtonDowload btn = new ButtonDowload("Depends Java");
+        final ButtonDownload btn = new ButtonDownload("Depends Java");
 
         btn.addListener(new AdvancedFileDownloader.DownloaderListener() {
             public void beforeDownload(Resource resource) {
@@ -997,7 +997,7 @@ public class LayoutDbManager extends VerticalLayout{
     }       
     
     private Component buildDownDependsDelph() {
-        final ButtonDowload btn = new ButtonDowload("Depends Delph");
+        final ButtonDownload btn = new ButtonDownload("Depends Delph");
 
         btn.addListener(new AdvancedFileDownloader.DownloaderListener() {
             public void beforeDownload(Resource resource) {                
@@ -1030,7 +1030,7 @@ public class LayoutDbManager extends VerticalLayout{
     }       
     
     private Component buildDownDependsXML() {
-        final ButtonDowload btn = new ButtonDowload("Depends XML");
+        final ButtonDownload btn = new ButtonDownload("Depends XML");
 
         btn.addListener(new AdvancedFileDownloader.DownloaderListener() {
             public void beforeDownload(Resource resource) {
@@ -1062,7 +1062,7 @@ public class LayoutDbManager extends VerticalLayout{
     }       
     
     private Component buildDownMethodImport(IndexedContainer list) {
-        final ButtonDowload btn = new ButtonDowload("Method Import");
+        final ButtonDownload btn = new ButtonDownload("Method Import");
 
         btn.addListener(new AdvancedFileDownloader.DownloaderListener() {
             public void beforeDownload(Resource resource) {
@@ -1090,7 +1090,7 @@ public class LayoutDbManager extends VerticalLayout{
         return btn;
     }       
     private Component buildDownMethodImport2(IndexedContainer list) {
-        final ButtonDowload btn = new ButtonDowload("Method Import2");
+        final ButtonDownload btn = new ButtonDownload("Method Import2");
 
         btn.addListener(new AdvancedFileDownloader.DownloaderListener() {
             public void beforeDownload(Resource resource) {
@@ -1528,7 +1528,7 @@ public class LayoutDbManager extends VerticalLayout{
         Connection conn = new Connection();
         conn.setDataBase(banco);
         conn.setUser(connection.getUser());
-        conn.setPassword(connection.getPassword());
+        conn.setPassword(connection.getPassword());;
 
         if (!UteisConnect.getConn(conn).isConnected()) {
             showErro(conn.getLog());

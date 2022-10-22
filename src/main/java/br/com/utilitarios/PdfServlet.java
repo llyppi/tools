@@ -50,7 +50,7 @@ public class PdfServlet  extends HttpServlet {
 
             output.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e);
         } finally {
             try {
                 input.close();

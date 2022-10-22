@@ -32,12 +32,13 @@ public class Main extends UI  {
         initConfig(request);
         configLog(request);
 
-        Panel panel = new Panel();
-        super.setContent(panel);
-        panel.setSizeFull();
+//        Panel panel = new Panel();
+//        super.setContent(panel);
+//        panel.setSizeFull();
 
         main = new AppContent();
-        panel.setContent(main);         
+//        panel.setContent(main);      
+        super.setContent(main);                               
 
         application = new Application();
         main.addComponent((AppInterface)application);
@@ -123,6 +124,8 @@ public class Main extends UI  {
             public boolean handleRequest(VaadinSession session, VaadinRequest request, VaadinResponse response) throws IOException {
                 InitContext context = new InitContext();
                 context.setAplicacao(application);
+                
+                main.addComponent((AppInterface)application);
                 
                 return context.init(request);
             }

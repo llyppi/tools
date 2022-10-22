@@ -2,15 +2,19 @@ package br.com.app.tela;
 
 import br.com.component.AdvancedFileDownloader;
 import br.com.component.ButtonConfirm;
-import br.com.component.ButtonDowload;
+import br.com.component.ButtonDownload;
 import br.com.component.ButtonRefresh;
 import br.com.component.HorizontalLayout;
 import br.com.component.ShowMensagens;
 import br.com.component.Table;
 import br.com.component.ThemeResource;
 import br.com.component.UploadDrop;
+import br.com.component.WindowPassword;
 import br.com.utilitarios.AppVariables;
+import br.com.utilitarios.UteisFile;
+import br.com.utilitarios.UteisMetodos;
 import br.com.utilitarios.UteisProjeto;
+import br.com.utilitarios.UteisSecurity;
 import com.google.common.io.ByteStreams;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -20,8 +24,8 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
+import com.vaadin.server.FileResource;
 import com.vaadin.server.Resource;
-import com.vaadin.server.StreamResource;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Button;
@@ -31,12 +35,14 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HasComponents;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import io.storj.Access;
 import io.storj.BucketInfo;
 import io.storj.BucketIterator;
 import io.storj.BucketListOption;
+import io.storj.ObjectDownloadOption;
 import io.storj.ObjectInfo;
 import io.storj.ObjectInputStream;
 import io.storj.ObjectIterator;
@@ -92,6 +98,65 @@ public class LayoutUplink extends VerticalLayout{
         init();
     }
     
+    public static void main(String[] args) {
+        new LayoutUplink().getAccess("","");
+    }
+    public String getAccess(String user,String pwd){
+        String home = UteisProjeto.getConfig("pathUser");
+        File faccess = null;
+        try {
+            if(home==null)
+                home=System.getProperty("user.home");
+            
+            ShowMensagens.showTray(home);
+            
+            faccess = new File(home+ File.separator +"accessgrant.txt");
+            if(!faccess.getParentFile().canRead())
+                showErro("no permission");
+            if(!faccess.getParentFile().canWrite())
+                showErro("no permission");
+            faccess.getParentFile().setReadable(true, false);// set readable   
+            faccess.getParentFile().setWritable(true, false); // set writable    
+            faccess.getParentFile().setExecutable(true, false); // set executable    
+                        
+//            String mega = home+"\\AppData\\Local\\MEGAcmd\\megaclient.exe";
+//            UteisMetodos.runCMD("taskkill","/im","MEGAcmdServer.exe");
+//            UteisMetodos.runCMD("taskkill","/im","megaclient.exe");
+//            UteisMetodos.runCMD(mega,"logout");
+//            UteisMetodos.runCMD(40,mega,"login",user,pwd);
+//            UteisMetodos.runCMD(mega,"get","/projetos/batch/uplink/accessgrant.txt"
+//                            ,AppVariables.pathWeb);
+//            UteisMetodos.runCMD(mega,"logout");
+
+            String urlUplink = "https://svn.riouxsvn.com/batchsvn/uplink";
+            String svn = "\"C:\\Program Files\\TortoiseSVN\\bin\\svn.exe\"";
+            if(!new File(svn).canExecute())
+            {
+//                showErro("no permission exe");
+                new File(svn).setExecutable(true, true); // set executable   
+            }
+            UteisMetodos.runCMD(svn,"export",urlUplink+"/accessgrant.txt",home
+                    ,"--non-interactive","--no-auth-cache","--username",user,"--password",pwd);  
+            
+            if(faccess.exists()){
+                String key =  UteisFile.readByte(faccess).trim();
+                UteisFile.deleteFile(faccess);
+                return key;
+            }
+            showErro(faccess.getPath());
+            
+        } catch (Exception ex) {
+            if(faccess!=null)
+            {
+                showErro(faccess.getPath());
+                faccess.delete();
+            }
+            showErro(ex.getMessage());
+        }
+        
+        return null;
+    }
+
     private void init(){
         AppContent.get().setCaption("Uplink");
                 
@@ -99,8 +164,35 @@ public class LayoutUplink extends VerticalLayout{
         super.setSpacing(true);
         super.setMargin(true);
 
-        String accessGrant = getAccessGrant();
-        this.access = Access.parse(accessGrant);
+        if(this.access==null){
+            String accessGrant = getAccessGrant();        
+            if (accessGrant != null) {
+                this.access = Access.parse(accessGrant);
+                init();
+                return;
+            }
+            Window w = new WindowPassword(null, true, true) {
+                @Override
+                public void run() {
+                }
+
+                @Override
+                public void run(String user, String pwd) {
+                    String key = getAccess(user,pwd);
+                    if(key==null){
+                        showErro("Sem acesso");
+                        return;  
+                    }
+                    access = Access.parse(key);
+                    this.close();
+                    init();
+                }
+
+            };
+            w.setCaption("ACESSO UPLINK");
+            UI.getCurrent().addWindow(w); 
+            return;
+        }
 //        String filesDir = System.getProperty("java.io.tmpdir");
 
         Properties properties = UteisProjeto.getConfig();              
@@ -196,8 +288,8 @@ public class LayoutUplink extends VerticalLayout{
         layout.addComponent(buildRefresh());
         layout.addComponent(buildFilter());
         layout.setExpandRatio(3f);
-//        delete = buildDelete();
-//        layout.addComponent(delete);
+        delete = buildDelete();
+        layout.addComponent(delete);
         
         return layout;
     }
@@ -231,8 +323,8 @@ public class LayoutUplink extends VerticalLayout{
         return btn;
     }
     
-    private Button buildDownload(String bucket,String fileName) {
-        ButtonDowload btn = new ButtonDowload("");
+    private Button buildDownload(String bucket,String fileName,long size) {
+        ButtonDownload btn = new ButtonDownload("");
        
         btn.setTabIndex(-1);
         btn.addDetachListener(new AdvancedFileDownloader.DetachListener() {
@@ -246,8 +338,7 @@ public class LayoutUplink extends VerticalLayout{
             public void beforeDownload(Resource resource) {                
                 
                 String fileDown = pathUplink+File.separator+fileName;
-                Project project = uplink.openProject(access);
-                InputStream input = download(bucket, fileDown,project);                
+                InputStream input = download(bucket, fileDown, size);
                 File f = new File(fileDown);
                 
                 if (input == null || !f.exists()){
@@ -255,14 +346,45 @@ public class LayoutUplink extends VerticalLayout{
                     btn.setDownload(null);
                     return;
                 }
-//                btn.setDownload(new FileResource(f));
-                btn.setDownload(new StreamResource(new StreamResource.StreamSource() {
-                    @Override
-                    public InputStream getStream() {
-//                        return ByteStreams.limit(input,Long.MAX_VALUE);
-                        return input;
-                    }
-                }, f.getName()));
+                btn.setDownload(new FileResource(f));
+//                btn.setDownload(new StreamResource(new StreamResource.StreamSource() {
+//                    @Override
+//                    public InputStream getStream() {
+//
+//                        BufferedInputStream b = new BufferedInputStream(input){
+//                            long readTMP=0;
+//
+//                            @Override
+//                            public synchronized int available() throws IOException {
+//                                return  (int)(size-readTMP);
+//                            }
+//                            
+//                            @Override
+//                            public int read(byte[] b) throws IOException {
+//                                int r = super.read(b); 
+//                                if(r<=0){
+//                                    return (int)(size-readTMP);
+//                                }
+//                                readTMP+=r;
+//                                return r;
+//                            }
+//
+//                            @Override
+//                            public void close() throws IOException {
+//                                if(readTMP<size)
+//                                {
+//                                    input.mark((int) (size-readTMP));
+//                                    return;
+//                                }
+//                                super.close(); //To change body of generated methods, choose Tools | Templates.
+//                            }
+//
+//                            
+//                        };
+//                        b.mark((int) size);
+//                        return b;
+//                    }
+//                }, f.getName()));
             }
         });
         
@@ -339,13 +461,17 @@ public class LayoutUplink extends VerticalLayout{
         table.addContainerProperty("Name", String.class, null);
         table.setColumnExpandRatio("Name", 3f);
         table.addContainerProperty("Date", Date.class, null);
+        table.setColumnWidth("Date", 100);
         table.addContainerProperty("Size", Long.class, null);
-        table.addContainerProperty("Check", CheckBox.class, null);
+        table.setColumnWidth("Size", 50);
         table.addContainerProperty("Type", String.class, null);
         table.addContainerProperty("Parent", String.class, null);
         table.addContainerProperty("Opc", Component.class, null);
+        table.setColumnWidth("Opc", 50);
+        table.addContainerProperty("Check", CheckBox.class, null);
         
-        table.setColumnHeaders("Name", "Date","Size","Check","Type","Parent",".....");
+        table.setColumnHeaders("Name", "Date","Size","Type","Parent",".....",".");
+        table.sort(new String[]{"Name"},new boolean[]{true});
     
         table.addShortcutListener(new ShortcutListener(
                 null, KeyCode.DELETE, null) {
@@ -499,38 +625,40 @@ public class LayoutUplink extends VerticalLayout{
         }
         project.close();
     }
-    private InputStream download(String bucket,String file,Project project) {
-//        Project project = uplink.openProject(access);
+    
+    private InputStream download(String bucket,String file,long size) {
+        Project project = uplink.openProject(access);
         
         OutputStream out = null;
-//            File f = new File(file);
+        File f = new File(file);
         try {
-//            if(f.exists() && f.length() > 0)
-//            {
-//                FileInputStream input = new FileInputStream(file);
-//                return input;
-//            }
-//            f.getParentFile().mkdirs();
-//            f.delete();
-//            f.createNewFile();
-//            out = new FileOutputStream(file);
+            if(f.exists() && f.length() > 0)
+            {
+                FileInputStream input = new FileInputStream(file);
+                return input;
+            }
+            f.getParentFile().mkdirs();
+            f.delete();
+            f.createNewFile();
+            out = new FileOutputStream(file);
             
-            ObjectInputStream download = project.downloadObject(bucket, new File(file).getName());
-                    
-//            ByteStreams.copy(download, out);
-            
+            ObjectInputStream download = project.downloadObject(bucket, new File(file).getName()
+                                    ,ObjectDownloadOption.length(size));
+    
+            ByteStreams.copy(download, out);
             return download;
         } catch (Exception ex) {            
-//            f.delete();
+            f.delete();
         }finally{
             try {
 //                project.close();
-//                out.close();
+                out.close();
             } catch (Exception ex1) {
             }
         }
         return null;
     }
+
     private void loadTable(String bucket) {
        loadTable(getBuckets(bucket));
     }
@@ -583,12 +711,13 @@ public class LayoutUplink extends VerticalLayout{
             }
             item.getItemProperty("Name").setValue(itm.getKey());
             item.getItemProperty("Date").setValue(itm.getSystemMetadata().getCreated());
-            item.getItemProperty("Size").setValue(itm.getSystemMetadata().getContentLength()*(1024*1024));
+            long size = itm.getSystemMetadata().getContentLength()/1024;
+            item.getItemProperty("Size").setValue(size);
             item.getItemProperty("Check").setValue(buildSelections(itm));
             item.getItemProperty("Type").setValue("object");
             item.getItemProperty("Parent").setValue(bucket);
             if(bucket!=null)
-                item.getItemProperty("Opc").setValue(buildDownload(bucket,itm.getKey()));
+                item.getItemProperty("Opc").setValue(buildDownload(bucket,itm.getKey(),itm.getSystemMetadata().getContentLength()));
             
         }
         tableList.setColumnFooter("Name", list.length+"");
@@ -645,11 +774,26 @@ public class LayoutUplink extends VerticalLayout{
 
     private static String getAccessGrant() {
         try {
-            String accessGrant = System.getenv("GATEWAY_0_ACCESS");
-//            String accessGrant = UteisFile.readByte(new File("d:/uplink/accessgrant.txt"));
+            String accessGrant = System.getenv("GATEWAY_0_ACCESS").trim();
             if (accessGrant == null || accessGrant.length() == 0) {
-                accessGrant = System.getenv("UPLINK_ACCESS");
+                File f = new File("d:/uplink/accessgrant.txt");
+                if(f.exists()){
+                    accessGrant = UteisFile.readByte(f).trim();
+                    return accessGrant;
+                }
             }
+            if (accessGrant == null || accessGrant.length() == 0) {
+                File f = new File(AppVariables.pathWeb
+                                                + File.separator 
+                                                +"WEB-INF"
+                                                + File.separator 
+                                                +"accessgrant.txt");
+                if(f.exists()){
+                    accessGrant = UteisFile.readByte(f).trim();
+                }
+            }
+            accessGrant = new UteisSecurity().decrypt(accessGrant);
+            
             return accessGrant;
         } catch (Exception ex) {
             

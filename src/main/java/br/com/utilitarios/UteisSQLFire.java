@@ -63,13 +63,13 @@ public class UteisSQLFire implements ISql{
             return list.toArray(new String[list.size()]);
             
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e);
         } finally {
             try {
                 pstmt.close();
 
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println(e);
             }
         }
         return null;
@@ -95,13 +95,13 @@ public class UteisSQLFire implements ISql{
             return list.toArray(new String[list.size()]);
             
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e);
         } finally {
             try {
                 pstmt.close();
 
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println(e);
             }
         }
         return null;
@@ -185,7 +185,7 @@ public class UteisSQLFire implements ISql{
                 list.add(relation);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e);
         } finally {
             try {
                 pstmt.close();
@@ -227,7 +227,7 @@ public class UteisSQLFire implements ISql{
                 list.add(relation);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e);
         } finally {
             try {
                 pstmt.close();
@@ -277,7 +277,7 @@ public class UteisSQLFire implements ISql{
             }            
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e);
         } finally {
             try {
                 pstmt.close();
